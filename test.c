@@ -6,14 +6,11 @@
 #include <string.h>
 
 int col[20];
-
-
 double promesing_n;
 double soluciones;
 double backtraking;
 
 int promesing(int i){
-    
     backtraking++;
     int k,segura;
     k = segura = 1;
@@ -33,8 +30,6 @@ void queens(int i,int n){
     if (promesing(i)){
         promesing_n++;
         if (i == n){
-            //Solucion
-            //printf("ENTRE\n");
             soluciones++;
         }else{
             for(j=1;j<=n;j++){
@@ -44,7 +39,6 @@ void queens(int i,int n){
         }    
     }
 }
-
 
 double exaustivo(int n){
     return (pow(n,n+1) - 1) / (n-1);;
@@ -58,7 +52,6 @@ double factorial(int i){
     return fact;
 }
 
-
 char* format(double a){
     char str[4050];
     if (a < 960000){
@@ -68,7 +61,6 @@ char* format(double a){
     }
     return str;
 }
-
 
 double MC_queens(int n) { 
     int i, j; int m; 
@@ -107,34 +99,19 @@ double promedio_mc(int n){
     for (int i = 0; i <= cantidad_pruebas; ++i) { 
         nodes += MC_queens(n);
         srand(time(NULL)); 
-        
     } 
-
     avg = nodes / cantidad_pruebas; 
-    
-    
     return avg;
 }
 
-
-
-
-
-
-
 int main()
 { 
-    
- 
     int i = 20;
     int limite = 13;
     
-    
     printf("|       N \t|       Exaustivo\t|        Factorial\t|        Backtraking\t|      Promesing\t|        Soluciones\t|       MC\t\n\n");
-    
-    
+
     for (int x = 4;x<=i;x++){
-        
         printf("|       %02d\t",       x                                ); //N
         printf("|       %s\t",         format(exaustivo(x))             ); //Exaustivo
         printf("|       %s\t",         format(factorial(x))             ); //Factorial
@@ -149,19 +126,10 @@ int main()
             printf("|       ????????????\t"); //Promesing
             printf("|       ????????????\t"); //Soluciones
         }
-        
-        
+
         printf("|       %s\t\n",     format(promedio_mc(x))              ); //MC
-        
-       
         promesing_n = 0.0;
         soluciones = 0.0;
         backtraking = 0.0;
     }
-    
-    
-    
-    
-    
-
 }
