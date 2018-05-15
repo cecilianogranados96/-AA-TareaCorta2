@@ -3,7 +3,8 @@
 #include <math.h>
 #include <time.h>
 
-int col[20];
+int col[17] = {0};
+int* col_mc;
 char str[4050];
 double soluciones;
 double promising_n;
@@ -26,6 +27,20 @@ int promising(int i){
     }
     return segura;
 }
+
+int promising_mc(int i){
+    backtraking++;
+    int k = 1,segura = 1;
+    while(segura && (k < i)){
+        if(col_mc[i] == col_mc[k] || abs(i-k) == abs(col_mc[i] - col_mc[k]) )
+            segura = 0;
+        else
+            k++;
+    }
+    return segura;
+}
+
+
 
 /**
  * Descripción: Funcion de backtracking para el problema de las N reinas. 
@@ -90,28 +105,41 @@ char* format(double a){
  * Recibe: Un int, con el n del problema.
  * Retorna: Un double con el resultado.
  **/
+
+int promising_children[100] = {-1};
+
+void restablecer(){
+    for(int x=0;x<100;x++){
+        promising_children[x] = -1;
+    }
+}
+
+
 double MC_queens(int n) { 
     int i, j, m; 
-    double mprod, numnodes;
-    int valid_child[255] = {0}; 
-
+    long double mprod, numnodes;
     i = 0; 
-    m = 1; 
-    mprod = 1;
-    numnodes = 1;  
+    m = mprod = numnodes = 1;  
     
     while (m != 0 && i != n) { 
-        mprod *= m; 
-        numnodes += mprod * m; 
+        mprod = mprod * m; 
+        numnodes = numnodes + mprod * n; 
         i++;
+        restablecer();
         m = 0; 
-        for (j = 1; j <= n; ++j) { 
+        for (j = 1; j <= n; j++) { 
             col[i] = j; 
-            if (promising(i))
-                valid_child[m++] = j;
+            if (promising_mc(i)){
+                m++;
+                promising_children[m] = j;
+                
+            }
         } 
         if (m != 0) {
-            j = valid_child[rand() % m]; 
+            j = -1;
+            while(j==-1){
+                j = promising_children[rand() % m]; 
+            }
             col[i] = j; 
         } 
     }
@@ -130,7 +158,7 @@ double promedio_mc(int n){
     int cantidad_pruebas = 100;
     for (int i = 0; i <= cantidad_pruebas; ++i) { 
         nodes += MC_queens(n);
-        srand(time(NULL)); 
+     
     } 
     avg = nodes / cantidad_pruebas; 
     return avg;
@@ -143,11 +171,13 @@ int main()
 { 
     int i = 20;
     int inicio = 4;
-    int limite = 15;
+    int limite = 13;
     
     printf("|\tN\t|\tExhaustivo\t|\tFactorial\t|\tBacktraking\t|\tPromising\t|\tSoluciones\t|\tMonte Carlo\t|\n");
 	printf("|---------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|\n");
     for (int x = inicio; x <= i; x++){
+        col_mc = (int*)malloc(sizeof(int) * (x+1));
+
         printf("|\t%02d\t", x); 					//N
         printf("|\t%s\t", format(exhaustivo(x))); 	//Exhaustivo
         printf("|\t%s\t", format(factorial(x))); 	//Factorial
