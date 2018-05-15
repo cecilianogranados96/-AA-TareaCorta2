@@ -5,6 +5,8 @@
 
 int col[17] = {0};
 int* col_mc;
+int* promising_children;
+
 char str[4050];
 double soluciones;
 double promising_n;
@@ -20,10 +22,11 @@ int promising(int i){
     backtraking++;
     int k = 1,segura = 1;
     while(segura && (k < i)){
-        if(col[i] == col[k] || i-k == abs(col[i] - col[k]) )
+        if(col[i] == col[k] || i-k == abs(col[i] - col[k]) ){
             segura = 0;
-        else
-            k++;
+        }
+        
+        k++;
     }
     return segura;
 }
@@ -32,10 +35,11 @@ int promising_mc(int i){
     backtraking++;
     int k = 1,segura = 1;
     while(segura && (k < i)){
-        if(col_mc[i] == col_mc[k] || abs(i-k) == abs(col_mc[i] - col_mc[k]) )
+        if(col_mc[i] == col_mc[k] || abs(i-k) == abs(col_mc[i] - col_mc[k]) ){
             segura = 0;
-        else
-            k++;
+        }
+        
+        k++;
     }
     return segura;
 }
@@ -106,10 +110,9 @@ char* format(double a){
  * Retorna: Un double con el resultado.
  **/
 
-int promising_children[100] = {-1};
 
 void restablecer(){
-    for(int x=0;x<100;x++){
+    for(int x=0;x<sizeof(promising_children);x++){
         promising_children[x] = -1;
     }
 }
@@ -128,11 +131,11 @@ double MC_queens(int n) {
         restablecer();
         m = 0; 
         for (j = 1; j <= n; j++) { 
-            col[i] = j; 
+            col_mc[i] = j; 
             if (promising_mc(i)){
-                m++;
+               
                 promising_children[m] = j;
-                
+                m++; 
             }
         } 
         if (m != 0) {
@@ -140,7 +143,7 @@ double MC_queens(int n) {
             while(j==-1){
                 j = promising_children[rand() % m]; 
             }
-            col[i] = j; 
+            col_mc[i] = j; 
         } 
     }
     return numnodes; 
@@ -177,7 +180,8 @@ int main()
 	printf("|---------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|\n");
     for (int x = inicio; x <= i; x++){
         col_mc = (int*)malloc(sizeof(int) * (x+1));
-
+        promising_children = (int*)malloc(sizeof(int) * (x+1));
+        
         printf("|\t%02d\t", x); 					//N
         printf("|\t%s\t", format(exhaustivo(x))); 	//Exhaustivo
         printf("|\t%s\t", format(factorial(x))); 	//Factorial
